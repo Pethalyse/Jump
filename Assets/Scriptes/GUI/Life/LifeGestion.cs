@@ -12,6 +12,7 @@ public class LifeGestion : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        player = GameObject.Find("Player");
         bg  = player.GetComponent<BattleGestion>();
     }
 

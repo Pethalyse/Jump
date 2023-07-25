@@ -57,9 +57,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scriptes\Camera\CameraControl.cs" />
+    <Compile Include="Assets\Scriptes\Dialogues.cs" />
+    <Compile Include="Assets\Scriptes\PnjDialogue.cs" />
     <Compile Include="Assets\Scriptes\GUI\Life\LifeGestion.cs" />
     <Compile Include="Assets\Scriptes\Player\BattleGestion.cs" />
     <Compile Include="Assets\Scriptes\Player\Mouvements.cs" />
+    <Compile Include="Assets\Scriptes\TextManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

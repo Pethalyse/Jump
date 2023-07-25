@@ -368,9 +368,12 @@
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.ref.dll"
 "Assets/Scriptes/Camera/CameraControl.cs"
+"Assets/Scriptes/Dialogues.cs"
 "Assets/Scriptes/GUI/Life/LifeGestion.cs"
 "Assets/Scriptes/Player/BattleGestion.cs"
 "Assets/Scriptes/Player/Mouvements.cs"
+"Assets/Scriptes/PnjDialogue.cs"
+"Assets/Scriptes/TextManager.cs"
 -langversion:9.0
 
 /deterministic
