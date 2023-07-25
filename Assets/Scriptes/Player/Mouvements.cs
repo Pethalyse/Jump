@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Mouvements : MonoBehaviour
@@ -21,12 +17,8 @@ public class Mouvements : MonoBehaviour
     [SerializeField] private float moveSpeed;
    
     //JUMP
-    private Vector3 velocity = Vector3.zero;
     private bool canJump = true;
-    private bool onGround = false;
-    private bool isJumping = false;
     private bool canJumpDash = false;
-    private bool onWall = false;
 
     [Header("Jump")]
     [SerializeField] private float jumpForce;
@@ -62,24 +54,22 @@ public class Mouvements : MonoBehaviour
             dirX = Input.GetAxisRaw("Horizontal");
             rb.velocity = new Vector2 (dirX * moveSpeed, rb.velocity.y);
 
-            if ((onGround || onWall) && Input.GetButtonDown("Jump"))
+            if ((canJump || canJumpDash) && Input.GetButtonDown("Jump"))
             {
                 //jump
-                canJumpDash = true;
-                isJumping = true;
-                onGround = false;
+                if(!canJumpDash)
+                {
+                    canJumpDash = true;
+                }
+                else
+                {
+                    canJumpDash = false;
+                }
+                canJump = false;
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             }
             else
             {
-
-                if (isJumping && canJumpDash && Input.GetButtonDown("Jump"))
-                {
-                    //jump dash
-                    canJumpDash = false;
-                    rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-
-                }
 
                 /*
                 //Si le joueur tombe
@@ -112,35 +102,51 @@ public class Mouvements : MonoBehaviour
         
     }
 
-    private bool isGrounded()
+    private void isGrounded()
     {
+        float extra = .02f;
 
-        if(Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.down, .1f, jumpableGround))
+        //raycast pour verifier si le joueur est au sol ou non
+        RaycastHit2D hitD = Physics2D.Raycast(coll.bounds.center, Vector2.down, coll.bounds.extents.y + extra, jumpableGround);
+
+        //raycast pour verifier si le joueur touche le mur gauche
+        RaycastHit2D hitL = Physics2D.Raycast(coll.bounds.center, Vector2.left, coll.bounds.extents.x + extra, jumpableGround);
+
+        //raycast pour verifier si le joueur touche le mur droit
+        RaycastHit2D hitR = Physics2D.Raycast(coll.bounds.center, Vector2.right, coll.bounds.extents.x + extra, jumpableGround);
+
+        //Verification visuel
+        Color rayColorD;
+        if(hitD.collider != null) { rayColorD = Color.green; }
+        else { rayColorD = Color.red; }
+
+        Color rayColorL;
+        if (hitL.collider != null) { rayColorL = Color.blue; }
+        else { rayColorL = Color.red; }
+
+        Color rayColorR;
+        if (hitR.collider != null) { rayColorR = Color.blue; }
+        else { rayColorR = Color.red; }
+
+        Debug.DrawRay(coll.bounds.center, Vector2.down * (coll.bounds.extents.y + extra), rayColorD);
+        Debug.Log(hitD.collider);
+
+        Debug.DrawRay(coll.bounds.center, Vector2.left * (coll.bounds.extents.x + extra), rayColorL);
+        Debug.Log(hitL.collider);
+
+        Debug.DrawRay(coll.bounds.center, Vector2.right * (coll.bounds.extents.x + extra), rayColorR);
+        Debug.Log(hitR.collider);
+
+
+        //Si l'un des ray touche alors il peut jump
+        if (hitD.collider != null || hitL.collider != null || hitR.collider != null)
         {
-            Debug.Log("Sol");
-
-            onGround = true;
-            isJumping = false;
+            canJump = true;
             canJumpDash = false;
-            onWall = false; 
-
-            return true;
-
         }
-        else if(Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.left, .1f, jumpableGround) || Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.right, .1f, jumpableGround))
+        else
         {
-            
-
-            if(dirX > 0) { Debug.Log("Mur droite"); }else if( dirX < 0) { Debug.Log("Mur gauche"); }
-
-            onGround = false;
-            isJumping = false;
             canJumpDash = false;
-            onWall = true;
-
-            return true;
         }
-
-        return false;
     }
 }
